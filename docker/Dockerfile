@@ -44,6 +44,9 @@ RUN apt install -y \
     parallel \
     task-spooler
 
+# COPY cpan configuration
+COPY cpan.MyConfig.pm /root/.cpan/CPAN/MyConfig.pm
+
 # Set up locales
 RUN sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && \
     locale-gen
@@ -100,6 +103,7 @@ COPY install_IRkernel.R /install_IRkernel.R
 RUN chmod +x /install_IRkernel.R \
     && /install_IRkernel.R \
     && jupyter labextension install @techrah/text-shortcuts
+    && rm /install_IRkernel.R
 
 # Install MongoDB Community Edition (specs for ubuntu:20.04)
 RUN wget -qO - https://www.mongodb.org/static/pgp/server-5.0.asc | apt-key add - \
