@@ -11,7 +11,7 @@ LABEL maintainer="David Gomez Peregrina" \
 RUN apt update && apt update --fix-missing && apt upgrade -y
 
 # Non-interactive tzdata configuration and installation
-COPY debconf_preseed.conf /etc/debconf_preseed.conf
+COPY config/debconf_preseed.conf /etc/debconf_preseed.conf
 RUN export DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true \
     && debconf-set-selections /etc/debconf_preseed.conf \
     && apt install tzdata
@@ -45,7 +45,7 @@ RUN apt install -y \
     task-spooler
 
 # COPY cpan configuration
-COPY cpan.MyConfig.pm /root/.cpan/CPAN/MyConfig.pm
+COPY config/cpan.MyConfig.pm /root/.cpan/CPAN/MyConfig.pm
 
 # Set up locales
 RUN sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && \
@@ -84,7 +84,7 @@ RUN chmod +x /opt/scripts/start_jupyterlab.sh \
     && ln -s /opt/scripts/start_jupyterlab.sh /opt/bin/start_jupyterlab
 
 # Install python3 package requirements
-COPY py_requirements.txt /py_requirements.txt
+COPY config/py_requirements.txt /py_requirements.txt
 RUN pip3 install -r /py_requirements.txt --upgrade \
     && rm /py_requirements.txt
 
@@ -97,7 +97,7 @@ RUN apt install -y dirmngr gnupg apt-transport-https ca-certificates \
 #[TODO] Install R packages of interest
 
 # Install Bioconductor
-COPY install_bioconductor.R /install_bioconductor.R
+COPY scripts/install_bioconductor.R /install_bioconductor.R
 RUN chmod +x /install_bioconductor.R \
     && /install_bioconductor.R \
     && rm /install_bioconductor.R
@@ -105,7 +105,7 @@ RUN chmod +x /install_bioconductor.R \
 # [TODO] Install bioconductor packages
 
 # Install IRkernel for jupyterlab
-COPY install_IRkernel.R /install_IRkernel.R
+COPY scripts/install_IRkernel.R /install_IRkernel.R
 RUN chmod +x /install_IRkernel.R \
     && /install_IRkernel.R \
     && jupyter labextension install @techrah/text-shortcuts
