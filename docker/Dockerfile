@@ -108,7 +108,7 @@ RUN chmod +x /install_bioconductor.R \
 COPY scripts/install_IRkernel.R /install_IRkernel.R
 RUN chmod +x /install_IRkernel.R \
     && /install_IRkernel.R \
-    && jupyter labextension install @techrah/text-shortcuts
+    && jupyter labextension install @techrah/text-shortcuts \
     && rm /install_IRkernel.R
 
 # Install MongoDB Community Edition (specs for ubuntu:20.04)
