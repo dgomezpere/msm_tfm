@@ -68,14 +68,20 @@ RUN apt install -y \
 RUN curl -fsSL https://deb.nodesource.com/setup_lts.x | bash - \
     && apt update && apt install nodejs
 
-# Install python3 and jupyterlab
+# Install python3
 RUN apt install -y \
     python3 \
     python3-pip \
     && pip3 install --upgrade pip \
     && ln -s /usr/bin/python3 /usr/bin/python
 
-RUN pip3 install jupyterlab
+# Install jupyterlab
+RUN pip3 install jupyterlab \
+    && mkdir -p /opt/scripts \
+    && mkdir -p /opt/bin
+COPY scripts/start_jupyterlab.sh /opt/scripts/start_jupyterlab.sh
+RUN chmod +x /opt/scripts/start_jupyterlab.sh \
+    && ln -s /opt/scripts/start_jupyterlab.sh /opt/bin/start_jupyterlab
 
 # Install python3 package requirements
 COPY py_requirements.txt /py_requirements.txt
