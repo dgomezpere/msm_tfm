@@ -6,7 +6,6 @@ from pathlib import Path
 import re
 from pprint import pprint
 
-
 class VcfRecord:
     def __init__(self, record=None):
         """
@@ -21,7 +20,7 @@ class VcfRecord:
         self._ref = None
         self._alt = None
         self._type = None
-        self._INFO = []
+        self._info = []
         self._calls = []
 
         if record:
@@ -29,36 +28,34 @@ class VcfRecord:
             self._populate_object()
     # Private methods
 
-
-
     def _populate_object(self):
         """
         """
         self._get_record_id()
-        self._get_record_chromosome()
-        self._get_record_position()
+        self._get_record_chrom()
+        self._get_record_pos()
         self._get_record_start()
         self._get_record_end()
-        self._get_record_reference()
-        self._get_record_alternative()
+        self._get_record_ref()
+        self._get_record_alt()
         self._get_record_type()
-        self._get_record_INFO()
+        self._get_record_info()
         self._get_record_calls()
-#
-#     # For each record
+
+    # For each record
     def _get_record_id(self) -> str:
         """
         <PENDING>
         """
         self._id = self._record.CHROM+':'+str(self._record.affected_start)+'-'+str(self._record.affected_end)+'|'+self._record.REF+'|'+self._record.ALT[0].value
 
-    def _get_record_chromosome(self) -> str:
+    def _get_record_chrom(self) -> str:
         """
         <PENDING>
         """
         self._chrom = self._record.CHROM
 
-    def _get_record_position(self) -> int:
+    def _get_record_pos(self) -> int:
         """
         <PENDING>
         """
@@ -76,13 +73,13 @@ class VcfRecord:
         """
         self._end = self._record.affected_end
 
-    def _get_record_reference(self) -> str:
+    def _get_record_ref(self) -> str:
         """
         <PENDING>
         """
         self._ref = self._record.REF
 
-    def _get_record_alternative(self) -> str:
+    def _get_record_alt(self) -> str:
         """
         <PENDING>
         """
@@ -95,11 +92,11 @@ class VcfRecord:
         self._type = self._record.ALT[0].type
 
 
-    def _get_record_INFO(self) -> dict:
+    def _get_record_info(self) -> dict:
         """
         <PENDING>
         """
-        self._INFO = self._record.INFO
+        self._info = self._record.INFO
 
     def _get_record_calls(self) -> list:
         """
@@ -113,22 +110,7 @@ class VcfRecord:
                 'data': call.data
                 })
 
-
-
-# #Getters and setters
-
-    @property
-    def record(self):
-        """
-        """
-        return self._record
-
-    @record.setter
-    def record(self, value):
-        """
-        """
-        if type(value) == vcfpy.record.Record:
-            self._record = value
+    #Getters and setters
 
     @property
     def id(self):
@@ -144,26 +126,26 @@ class VcfRecord:
             self._id = value
 
     @property
-    def chromosome(self):
+    def chrom(self):
         """
         """
         return self._chrom
 
-    @chromosome.setter
-    def chromosome(self, value):
+    @chrom.setter
+    def chrom(self, value):
         """
         """
         if type(value) == str:
             self._chrom = value
 
     @property
-    def position(self):
+    def pos(self):
         """
         """
         return self._pos
 
-    @position.setter
-    def position(self, value):
+    @pos.setter
+    def pos(self, value):
         """
         """
         if type(value) == int:
@@ -196,72 +178,69 @@ class VcfRecord:
             self._end = value
 
     @property
-    def reference(self):
+    def ref(self):
         """
         """
         return self._ref
 
-    @reference.setter
-    def reference(self, value):
+    @ref.setter
+    def ref(self, value):
         """
         """
         if type(value) == str:
             self._ref = value
 
     @property
-    def alternative(self):
+    def alt(self):
         """
         """
         return self._alt
 
-    @alternative.setter
-    def alternative(self, value):
+    @alt.setter
+    def alt(self, value):
         """
         """
         if type(value) == str:
             self._alt = value
 
     @property
-    def var_type(self):
+    def type(self):
         """
         """
         return self._type
 
-    @var_type.setter
-    def var_type(self, value):
+    @type.setter
+    def type(self, value):
         """
         """
         if type(value) == str:
             self._type = value
 
     @property
-    def INFO(self):
+    def info(self):
         """
         """
-        return self._INFO
+        return self._info
 
-    @INFO.setter
-    def INFO(self, dictionary):
+    @info.setter
+    def info(self, dictionary):
         """
         """
         if type(dictionary) == dict:
-            self._INFO = dictionary
-
+            self._info = dictionary
 
     @property
-    def var_calls(self):
+    def calls(self):
         """
         """
         return self._calls
 
-    @var_calls.setter
-    def var_calls(self, vector):
+    @calls.setter
+    def calls(self, vector):
         """
         """
         if type(vector) == list:
             self._calls = vector
-
-
 
 def main():
     vcf_filepath = "/Users/segarmond/Documents/Science/Bioinfo/TFM/old_msm_tfm/msm_tfm-main/test_data/20200908_GISTomics_chr22_variants.decomp.norm.filter.vcf.gz"
@@ -272,9 +251,7 @@ def main():
     for record in reader:
         vcf_test.append(VcfRecord(record))
         break
-
-    print(vcf_test[0].var_calls)
-
+    print(vcf_test[0].calls)
 
 if __name__ == '__main__':
     main()
