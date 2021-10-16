@@ -5,6 +5,90 @@ import vcfpy
 from pathlib import Path
 import re
 from pprint import pprint
+from collections import OrderedDict
+
+class RecordCall:
+    def __init__(self, call=None):
+        """
+        """
+        # Initialize all properties to None
+        self._call = None
+        self._sample = None
+        self._data = OrderedDict()
+
+        if call:
+            self._call = call
+            self._get_call_sample()
+            self._get_call_data()
+
+    #For each call
+    def _get_call_sample(self):
+        """
+        """
+        self._sample = self._call.sample
+
+    def _get_call_data(self):
+        """
+        """
+        self._data = OrderedDict(self._call.data)
+
+    #Getters and setters
+    @property
+    def sample(self):
+        """
+        """
+        return self._sample
+
+    @sample.setter
+    def sample(self, value):
+        """
+        """
+        if type(value) == str:
+            self._sample = value
+
+    @property
+    def data(self):
+        """
+        """
+        return self._data
+
+    @data.setter
+    def data(self, dictionary):
+        """
+        Enhance
+        """
+        if type(dictionary) == OrderedDict:
+            self._data = dictionary
+
+class RecordInfo:
+    def __init__(self, record=None):
+        """
+        """
+        # Initialize all properties to None
+        self._record = None
+        self._data = OrderedDict()
+        if record:
+            self._record = record
+            self._get_record_info_data()
+
+    #Private methods
+    def _get_record_info_data(self):
+        self._data = OrderedDict(self._record.INFO)
+
+    #Getters and setters
+    @property
+    def data(self):
+        """
+        """
+        return self._data
+
+    @data.setter
+    def data(self, dictionary):
+        """
+        Enhance
+        """
+        if type(dictionary) == OrderedDict:
+            self._data = dictionary
 
 class VcfRecord:
     def __init__(self, record=None):
@@ -26,8 +110,8 @@ class VcfRecord:
         if record:
             self._record = record
             self._populate_object()
-    # Private methods
 
+    # Private methods
     def _populate_object(self):
         """
         """
@@ -96,7 +180,7 @@ class VcfRecord:
         """
         <PENDING>
         """
-        self._info = self._record.INFO
+        self._info = RecordInfo(self._record)
 
     def _get_record_calls(self) -> list:
         """
@@ -105,13 +189,9 @@ class VcfRecord:
         self._calls = []
 
         for call in self._record.calls:
-            self._calls.append({
-                'sample': call.sample,
-                'data': call.data
-                })
+            self._calls.append(RecordCall(call))
 
     #Getters and setters
-
     @property
     def id(self):
         """
@@ -226,7 +306,7 @@ class VcfRecord:
     def info(self, dictionary):
         """
         """
-        if type(dictionary) == dict:
+        if type(dictionary) == OrderedDict:
             self._info = dictionary
 
     @property
@@ -245,13 +325,12 @@ class VcfRecord:
 def main():
     vcf_filepath = "/Users/segarmond/Documents/Science/Bioinfo/TFM/old_msm_tfm/msm_tfm-main/test_data/20200908_GISTomics_chr22_variants.decomp.norm.filter.vcf.gz"
     print(vcf_filepath)
-    print("Hello Marc")
     reader = vcfpy.Reader.from_path(vcf_filepath)
     vcf_test = []
     for record in reader:
         vcf_test.append(VcfRecord(record))
         break
-    print(vcf_test[0].calls)
+    pprint(vcf_test[0].info.data)
 
 if __name__ == '__main__':
     main()
