@@ -63,16 +63,7 @@ class RecordInfo:
     def __init__(self, record=None):
         """
         """
-        # Initialize all properties to None
-        self._record = None
-        self._data = OrderedDict()
-        if record:
-            self._record = record
-            self._get_record_info_data()
-
-    #Private methods
-    def _get_record_info_data(self):
-        self._data = OrderedDict(self._record.INFO)
+        self._data = record.INFO
 
     #Getters and setters
     @property
@@ -86,7 +77,7 @@ class RecordInfo:
         """
         Enhance
         """
-        if type(value) == OrderedDict:
+        if type(value) == dict:
             self._data = value
 
 class VcfRecord:
@@ -305,7 +296,7 @@ class VcfRecord:
     def info(self, value):
         """
         """
-        if type(value) == OrderedDict:
+        if type(value) == list:
             self._info = value
 
     @property
