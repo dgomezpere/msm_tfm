@@ -75,7 +75,6 @@ class RecordInfo:
     @data.setter
     def data(self, value):
         """
-        Enhance
         """
         if type(value) == dict:
             self._data = value
@@ -296,7 +295,7 @@ class VcfRecord:
     def info(self, value):
         """
         """
-        if type(value) == list:
+        if type(value) == RecordInfo:
             self._info = value
 
     @property
