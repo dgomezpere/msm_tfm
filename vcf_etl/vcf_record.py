@@ -21,7 +21,6 @@ class RecordCall:
             self._get_call_sample()
             self._get_call_data()
 
-    #For each call
     def _get_call_sample(self):
         """
         """
