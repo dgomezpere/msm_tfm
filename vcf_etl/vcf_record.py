@@ -309,7 +309,11 @@ class VcfRecord:
         """
         """
         if type(value) == list:
-            self._calls = value
+            test_call = []
+            for i in value:
+                test_call.append(type(i)==RecordCall)
+            if all(test_call):
+                self._calls = value
 
 def main():
     vcf_filepath = "/Users/segarmond/Documents/Science/Bioinfo/TFM/old_msm_tfm/msm_tfm-main/test_data/20200908_GISTomics_chr22_variants.decomp.norm.filter.vcf.gz"
@@ -319,7 +323,7 @@ def main():
     for record in reader:
         vcf_test.append(VcfRecord(record))
         break
-    pprint(vcf_test[0].info.data)
+    pprint(type(vcf_test[0].calls[0]))
 
 if __name__ == '__main__':
     main()
