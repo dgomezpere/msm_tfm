@@ -52,12 +52,12 @@ class RecordCall:
         return self._data
 
     @data.setter
-    def data(self, dictionary):
+    def data(self, value):
         """
         Enhance
         """
-        if type(dictionary) == OrderedDict:
-            self._data = dictionary
+        if type(value) == OrderedDict:
+            self._data = value
 
 class RecordInfo:
     def __init__(self, record=None):
@@ -82,12 +82,12 @@ class RecordInfo:
         return self._data
 
     @data.setter
-    def data(self, dictionary):
+    def data(self, value):
         """
         Enhance
         """
-        if type(dictionary) == OrderedDict:
-            self._data = dictionary
+        if type(value) == OrderedDict:
+            self._data = value
 
 class VcfRecord:
     def __init__(self, record=None):
@@ -302,11 +302,11 @@ class VcfRecord:
         return self._info
 
     @info.setter
-    def info(self, dictionary):
+    def info(self, value):
         """
         """
-        if type(dictionary) == OrderedDict:
-            self._info = dictionary
+        if type(value) == OrderedDict:
+            self._info = value
 
     @property
     def calls(self):
@@ -315,11 +315,11 @@ class VcfRecord:
         return self._calls
 
     @calls.setter
-    def calls(self, vector):
+    def calls(self, value):
         """
         """
-        if type(vector) == list:
-            self._calls = vector
+        if type(value) == list:
+            self._calls = value
 
 def main():
     vcf_filepath = "/Users/segarmond/Documents/Science/Bioinfo/TFM/old_msm_tfm/msm_tfm-main/test_data/20200908_GISTomics_chr22_variants.decomp.norm.filter.vcf.gz"
