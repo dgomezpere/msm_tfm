@@ -60,10 +60,10 @@ class RecordCall:
             self._data = value
 
 class RecordInfo:
-    def __init__(self, record=None):
+    def __init__(self, data=None):
         """
         """
-        self._data = record.INFO
+        self._data = data
 
     #Getters and setters
     @property
@@ -164,12 +164,11 @@ class VcfRecord:
         """
         self._type = self._record.ALT[0].type
 
-
     def _get_record_info(self) -> dict:
         """
         <PENDING>
         """
-        self._info = RecordInfo(self._record)
+        self._info = RecordInfo(data=self._record.INFO)
 
     def _get_record_calls(self) -> list:
         """
@@ -178,7 +177,7 @@ class VcfRecord:
         self._calls = []
 
         for call in self._record.calls:
-            self._calls.append(RecordCall(call))
+            self._calls.append(RecordCall(call=call))
 
     #Getters and setters
     @property
