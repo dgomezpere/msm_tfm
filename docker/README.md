@@ -22,7 +22,7 @@ $ docker image rm <image_name|image_id> #Remove a existing Docker image
 
 ```bash
 $ cd <path/to/docker_folder>
-$ docker run -it -d -p <jupyterlab_localhost_port>:8888 --name <container_name> <tag_name>:<image_name>
+$ docker run -it -d -p <jupyterlab_localhost_port>:8888 -v <local_filesystem_path_to_mount>:<mounting_path_inside_container_filesystem> --name <container_name> <tag_name>:<image_name>
 ```
 
 `#[TODO] Add volumes`
