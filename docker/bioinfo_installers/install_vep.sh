@@ -12,7 +12,7 @@ cd /opt/ensembl-vep/ensembl-vep_v$VEP_VERSION
 git pull
 git checkout release/$VEP_VERSION
 ## Install dependencies
-apt install -y gcc g++ make
+apt install -y gcc g++ make libdbd-mysql-perl
 cpan Archive::Zip
 cpan DBD::mysql
 cpan DBI
