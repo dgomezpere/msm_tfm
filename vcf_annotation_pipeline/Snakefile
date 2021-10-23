@@ -1,0 +1,40 @@
+#!/usr/bin/env python3
+#-*- coding: utf-8 -*-
+
+from pathlib import Path
+from snakemake.utils import makedirs
+
+workdir: config['workdir']
+
+# Create analysis directories tree
+def get_values_from_nested_dict(dict: dict) -> list: #[TODO] Move to commons or utils
+    """
+    Gets the values from a nested (multilevel) dict
+    :param dict: nested dict
+    :return: list with values from dict 
+    """
+
+    result = []
+    for key, val in dict.items():
+        if type(val) == dict:
+            result += get_values_from_nested_dict(dict=val)
+        else:
+            result.append(val)
+    return result
+
+makedirs(get_values_from_nested_dict(config['workdir_tree']))
+
+# Create symlink of input VCF file
+vcf_filepath = Path(config['input_vcf'])
+vcf_symlink = Path(config['workdir_tree']['vcf_dirpath'])/vcf_filepath.name
+if not vcf_symlink.exists():
+    vcf_symlink.symlink_to(vcf_filepath)
+
+# Include rules
+include: 'rules/vcf_decomp_norm.smk'
+include: 'rules/vcf_annotation.smk'
+
+rule all:
+    input:
+        rules.vep_annot_vcf.output
+
