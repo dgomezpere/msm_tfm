@@ -10,6 +10,8 @@ from collections import OrderedDict
 class RecordCall:
     def __init__(self, call=None):
         """
+        Class to store sample and data attributes from a given call
+        :param value: vcfpy.record.Call
         """
         # Initialize all properties to None
         self._call = None
@@ -23,11 +25,15 @@ class RecordCall:
 
     def _get_call_sample(self):
         """
+        Loads the sample atribute from vcfpy.Call objects
+        :param value: vcfpy.record.Call
         """
         self._sample = self._call.sample
 
     def _get_call_data(self):
         """
+        Loads as OrderedDict the data atribute from vcfpy.Call objects
+        :param value: vcfpy.record.Call
         """
         self._data = OrderedDict(self._call.data)
 
@@ -35,12 +41,16 @@ class RecordCall:
     @property
     def sample(self):
         """
+        Returns a string with sample atribute for vcfpy.record.Call
+        :return: str
         """
         return self._sample
 
     @sample.setter
     def sample(self, value):
         """
+        Sets sample atribute for RecordCall object
+        :param value: str
         """
         if type(value) == str:
             self._sample = value
@@ -48,13 +58,16 @@ class RecordCall:
     @property
     def data(self):
         """
+        Returns an OrderedDict with data attribute from vcf.Call
+        :return: OrderedDict
         """
         return self._data
 
     @data.setter
     def data(self, value):
         """
-        Enhance
+        Sets data attribute from OrderedDict for RecordCall object
+        :param value: OrderedDict
         """
         if type(value) == OrderedDict:
             self._data = value
@@ -62,6 +75,8 @@ class RecordCall:
 class RecordInfo:
     def __init__(self, data=None):
         """
+        Class to store Info field data from a given record
+        :param value: vcfpy.record
         """
         self._data = data
 
@@ -69,12 +84,16 @@ class RecordInfo:
     @property
     def data(self):
         """
+        Returns a RecordInfo object from a given vcfpy.record
+        :return: dict
         """
         return self._data
 
     @data.setter
     def data(self, value):
         """
+        Sets data attribute from OrderedDict for RecordCall object
+        :param value: dict
         """
         if type(value) == dict:
             self._data = value
@@ -82,6 +101,8 @@ class RecordInfo:
 class VcfRecord:
     def __init__(self, record=None):
         """
+        Class to store data from a given record of a VCF formatted file
+        :param filepath: vcfpy.record
         """
         # Initialize all properties to None
         self._record = None
@@ -103,6 +124,17 @@ class VcfRecord:
     # Private methods
     def _populate_object(self):
         """
+        Parses the data from a given record of a VCF formatted file
+        :return:self._get_record_id = str
+                self._get_record_chrom = str
+                self._get_record_pos = int
+                self._get_record_start = int
+                self._get_record_end = int
+                self._get_record_ref = str
+                self._get_record_alt = str
+                self._get_record_type = str
+                self._get_record_info = RecordInfo
+                self._get_record_calls = list
         """
         self._get_record_id()
         self._get_record_chrom()
@@ -118,61 +150,71 @@ class VcfRecord:
     # For each record
     def _get_record_id(self) -> str:
         """
-        <PENDING>
+        Generates and loads the id value for a given record of a VCF file
+        :return: str
         """
         self._id = self._record.CHROM+':'+str(self._record.affected_start)+'-'+str(self._record.affected_end)+'|'+self._record.REF+'|'+self._record.ALT[0].value
 
     def _get_record_chrom(self) -> str:
         """
-        <PENDING>
+        Loads the chromosome field from a given record of a VCF file
+        :return: str
         """
         self._chrom = self._record.CHROM
 
     def _get_record_pos(self) -> int:
         """
-        <PENDING>
+        Loads the position field from a given record of a VCF file
+        :return: int
         """
         self._pos = self._record.POS
 
     def _get_record_start(self) -> int:
         """
-        <PENDING>
+        Loads the start position field from a given record of a VCF file
+        :return: int
         """
         self._start = self._record.affected_start
 
     def _get_record_end(self) -> int:
         """
-        <PENDING>
+        Loads the end position field from a given record of a VCF file
+        :return: int
         """
         self._end = self._record.affected_end
 
     def _get_record_ref(self) -> str:
         """
-        <PENDING>
+        Loads the reference value field from a given record of a VCF file
+        :return: str
         """
         self._ref = self._record.REF
 
     def _get_record_alt(self) -> str:
         """
-        <PENDING>
+        Loads the alternative value field from a given record of a VCF file
+        :return: str
         """
         self._alt = self._record.ALT[0].value
 
     def _get_record_type(self) -> str:
         """
-        <PENDING>
+        Loads the variance type field from a given record of a VCF file
+        :return: str
         """
         self._type = self._record.ALT[0].type
 
     def _get_record_info(self) -> dict:
         """
-        <PENDING>
+        Loads the info field from a given record of a VCF file
+        :return: RecordInfo
         """
         self._info = RecordInfo(data=self._record.INFO)
 
     def _get_record_calls(self) -> list:
         """
-        <PENDING>
+        Loads the calls from a given record of a VCF file
+        :return: list of RecordCall objects
         """
         self._calls = []
 
@@ -183,12 +225,16 @@ class VcfRecord:
     @property
     def id(self):
         """
+        Returns a string with a record id
+        :return: str
         """
         return self._id
 
     @id.setter
     def id(self, value):
         """
+        Sets record id value of a given record
+        :param value: str
         """
         if type(value) == str:
             self._id = value
@@ -196,12 +242,16 @@ class VcfRecord:
     @property
     def chrom(self):
         """
+        Returns a string with a record chromosome value
+        :return: str
         """
         return self._chrom
 
     @chrom.setter
     def chrom(self, value):
         """
+        Sets record chromosome value of a given record
+        :param value: str
         """
         if type(value) == str:
             self._chrom = value
@@ -209,12 +259,16 @@ class VcfRecord:
     @property
     def pos(self):
         """
+        Returns a integer with a record position
+        :return: int
         """
         return self._pos
 
     @pos.setter
     def pos(self, value):
         """
+        Sets record position value of a given record
+        :param value: int
         """
         if type(value) == int:
             self._pos = value
@@ -222,12 +276,16 @@ class VcfRecord:
     @property
     def start(self):
         """
+        Returns a integer with a record starting position
+        :return: int
         """
         return self._start
 
     @start.setter
     def start(self, value):
         """
+        Sets record starting position value of a given record
+        :param value: int
         """
         if type(value) == int:
             self._start = value
@@ -235,12 +293,16 @@ class VcfRecord:
     @property
     def end(self):
         """
+        Returns a integer with a record ending position
+        :return: int
         """
         return self._end
 
     @end.setter
     def end(self, value):
         """
+        Sets record ending position value of a given record
+        :param value: int
         """
         if type(value) == int:
             self._end = value
@@ -248,12 +310,16 @@ class VcfRecord:
     @property
     def ref(self):
         """
+        Returns a string with a record reference value
+        :return: str
         """
         return self._ref
 
     @ref.setter
     def ref(self, value):
         """
+        Sets record reference value of a given record
+        :param value: str
         """
         if type(value) == str:
             self._ref = value
@@ -261,12 +327,16 @@ class VcfRecord:
     @property
     def alt(self):
         """
+        Returns a string with a record alternative value
+        :return: str
         """
         return self._alt
 
     @alt.setter
     def alt(self, value):
         """
+        Sets record alternative value of a given record
+        :param value: str
         """
         if type(value) == str:
             self._alt = value
@@ -274,12 +344,16 @@ class VcfRecord:
     @property
     def type(self):
         """
+        Returns a string with a record variance type
+        :return: str
         """
         return self._type
 
     @type.setter
     def type(self, value):
         """
+        Sets record variance type of a given record
+        :param value: str
         """
         if type(value) == str:
             self._type = value
@@ -287,12 +361,16 @@ class VcfRecord:
     @property
     def info(self):
         """
+        Returns a dictionary with a record info field
+        :return: RecordInfo
         """
         return self._info
 
     @info.setter
     def info(self, value):
         """
+        Sets record info field of a given record
+        :param value: RecordInfo
         """
         if type(value) == RecordInfo:
             self._info = value
@@ -300,12 +378,16 @@ class VcfRecord:
     @property
     def calls(self):
         """
+        Returns a list of RecordCall objects with call info from a record
+        :return: list
         """
         return self._calls
 
     @calls.setter
     def calls(self, value):
         """
+        Sets a list of RecordCall objects of a given record
+        :param value: list
         """
         if type(value) == list:
             test_call = []
