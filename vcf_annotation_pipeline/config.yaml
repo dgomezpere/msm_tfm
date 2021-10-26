@@ -1,0 +1,39 @@
+# Analysis workdir tree
+workdir_tree:
+    vcf_dirpath: 'vcf'
+    qc_data_dirpath: 'qc/data'
+    qc_report_dirpath: 'qc/report'
+
+# References
+references:
+    refgenome_filepath: '/opt/msm_tfm/references/GCA_000001405.15_GRCh38_no_alt_plus_hs38d1_analysis_set.fa'
+
+# CLI software configuration
+vcf_validator:
+    path: '/opt/bin/vcf_validator'
+    opts:
+        validation_level: 'warning'
+        report_type: 'summary'
+
+vt:
+    path: '/opt/bin/vt'
+    opts:
+        smart_decomposition: true
+        window_size: 100000
+
+bcftools:
+    path: '/opt/bin/bcftools'
+    opts: null
+
+tabix:
+    path: '/opt/bin/tabix'
+    opts: null
+
+vep:
+    path: '/opt/bin/vep'
+    opts:
+        buffer_size: 10000
+        dir_cache: '/opt/msm_tfm/ensembl-vep/cache'
+        exclude_predicted: true
+        specie: 'hsapiens'
+        assembly: 'GRCh38'
