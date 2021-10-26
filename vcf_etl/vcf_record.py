@@ -309,8 +309,8 @@ class VcfRecord:
         """
         if type(value) == list:
             test_call = []
-            for i in value:
-                test_call.append(type(i)==RecordCall)
+            for item in value:
+                test_call.append(type(item)==RecordCall)
             if all(test_call):
                 self._calls = value
 
