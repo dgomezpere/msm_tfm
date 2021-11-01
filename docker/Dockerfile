@@ -120,7 +120,7 @@ RUN wget -qO - https://www.mongodb.org/static/pgp/server-5.0.asc | apt-key add -
 # COPY and install bioinfo_installers
 COPY bioinfo_installers /bioinfo_installers
 RUN chmod +x /bioinfo_installers/*.sh \
-    && for installer in $(ls /bioinfo_installers); do echo '#[INFO] Installing:' /bioninfo_installers/$installer; /bioinfo_installers/$installer; done \
+    && for installer in $(ls /bioinfo_installers); do echo '#[INFO] Installing:' /bioinfo_installers/$installer; /bioinfo_installers/$installer; done \
     && rm -rf /bioinfo_installers
 # bioinfo_installers will install binaries in /opt/bin
 ENV PATH="/opt/bin:$PATH"
