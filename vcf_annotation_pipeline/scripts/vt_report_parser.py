@@ -53,7 +53,7 @@ def parse_vt_decompose_report(report_filepath: str) -> dict:
     """
 
     # Regex
-    value_re = re.compile('(?P<value>\S+)$')
+    value_re = re.compile('(?P<value>(true\s){0,1}\S+)$')
 
     # Report data structure
     report = {
