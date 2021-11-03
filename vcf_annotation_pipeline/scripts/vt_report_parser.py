@@ -32,19 +32,28 @@ def get_args():
 def parse_vt_decompose_report(report_filepath: str) -> dict:
     """
     <PENDING>
+    Example:
+    // START //
+    decompose v0.5
+
+    options:     input VCF file        /opt/msm_tfm/test_data/20200908_GISTomics_chr22_variants.vcf.gz
+             [s] smart decomposition   true (experimental)
+             [o] output VCF file       -
+
+
+    stats: no. variants                 : 17639
+           no. biallelic variants       : 17639
+           no. multiallelic variants    : 0
+
+           no. additional biallelics    : 0
+           total no. of biallelics      : 17639
+
+    Time elapsed: 0.77s
+    // END //
     """
 
     # Regex
-    version_re = re.compile('decompose (?P<version>\S+$)')
-    input_re = re.compile('input VCF file\s+(?P<ifile>\S+)')
-    output_re = re.compile('output VCF file\s+(?P<ofile>\S+)')
-    sdec_re = re.compile('smart decomposition\s+(?P<sdec>\S+ \S+)')
-    nvar_re = re.compile('no. variants\s+: (?P<nvar>\d+)')
-    nbia_re = re.compile('no. biallelic variants\s+: (?P<nbia>\d+)')
-    nmul_re = re.compile('no. multiallelic variants\s+: (?P<nmul>\d+)')
-    nadd_re = re.compile('no. additional biallelics\s+: (?P<nadd>\d+)')
-    tbv_re = re.compile('total no. of biallelics\s+: (?P<tbv>\d+)')
-    time_re = re.compile('Time elapsed: (?P<time>\d\S+)')
+    value_re = re.compile('(?P<value>\S+)$')
 
     # Report data structure
     report = {
@@ -54,80 +63,96 @@ def parse_vt_decompose_report(report_filepath: str) -> dict:
         'time_elapsed': None,
     }
 
-    options = report['options']
-    stats = report['stats']
-
     with open(report_filepath, 'r') as fh:
         for line in fh:
-            line = line.lstrip(' ')
+            line = line.lstrip() # Default stripping by whitespaces
+
+            if not line: # Line is empty
+                continue
+
+            value = value_re.search(line).groupdict()['value']
+
+            # Parsing version
             if line.startswith('decompose'):
-                capture_value = version_re.search(line).groupdict()["version"]
-                report['version'] = f"vt_decompose_{capture_value}"
+                report['version'] = f"vt_decompose_{value}"
 
+            # Parsing options
             elif line.startswith('options'):
-                capture_value = input_re.search(line).groupdict()['ifile']
-                report['options']['input_vcf'] = capture_value
+                report['options']['input_vcf'] = value
 
-            elif line.startswith('[o] output VCF'):
-                capture_value = output_re.search(line).groupdict()['ofile']
-                report['options']['output_vcf'] = capture_value
+            elif line.startswith('[o]'):
+                report['options']['output_vcf'] = value
 
-            elif line.startswith('[s] smart decomposition'):
-                capture_value = sdec_re.search(line).groupdict()['sdec']
-                report['options']['smart_decomposition'] = capture_value
+            elif line.startswith('[s]'):
+                report['options']['smart_decomposition'] = value
 
+            # Parsing stats
             elif line.startswith('stats'):
-                capture_value = nvar_re.search(line).groupdict()['nvar']
-                report['stats']['n_variants'] = int(capture_value)
+                report['stats']['n_variants'] = int(value)
 
             elif line.startswith('no. biallelic variants'):
-                capture_value = nbia_re.search(line).groupdict()['nbia']
-                report['stats']['n_biallelic_variants'] = int(capture_value)
+                report['stats']['n_biallelic_variants'] = int(value)
 
             elif line.startswith('no. multiallelic variants'):
-                capture_value = nmul_re.search(line).groupdict()['nmul']
-                report['stats']['n_multiallelic_variants'] = int(capture_value)
+                report['stats']['n_multiallelic_variants'] = int(value)
 
             elif line.startswith('no. additional biallelics'):
-                capture_value = nadd_re.search(line).groupdict()['nadd']
-                report['stats']['n_additional_biallelic_variants'] = int(capture_value)
+                report['stats']['n_additional_biallelic_variants'] = int(value)
 
             elif line.startswith('total no. of biallelics'):
-                capture_value = tbv_re.search(line).groupdict()['tbv']
-                report['stats']['total_biallelic_variants'] = int(capture_value)
+                report['stats']['total_biallelic_variants'] = int(value)
 
+            # Parsing time elapsed
             elif line.startswith('Time elapsed'):
-                capture_value = time_re.search(line).groupdict()['time']
-                report['time_elapsed'] = capture_value
+                report['time_elapsed'] = value
 
     return report
 
 def parse_vt_normalize_report(report_filepath: str) -> dict:
     """
     <PENDING>
+    Example:
+    // START //
+    normalize v0.5
+
+    options:     input VCF file                                  vcf/20200908_GISTomics_chr22_variants.decomp.vcf.gz
+             [o] output VCF file                                 -
+             [w] sorting window size                             100000
+             [m] no fail on masked reference inconsistency       false
+             [n] no fail on reference inconsistency              true
+             [q] quiet                                           false
+             [d] debug                                           false
+             [r] reference FASTA file                            /opt/msm_tfm/references/GCA_000001405.15_GRCh38_no_alt_plus_hs38d1_analysis_set.fa
+
+
+    stats: biallelic
+              no. left trimmed                      : 0
+              no. right trimmed                     : 0
+              no. left and right trimmed            : 0
+              no. right trimmed and left aligned    : 0
+              no. left aligned                      : 0
+
+           total no. biallelic normalized           : 0
+
+           multiallelic
+              no. left trimmed                      : 0
+              no. right trimmed                     : 0
+              no. left and right trimmed            : 0
+              no. right trimmed and left aligned    : 0
+              no. left aligned                      : 0
+
+           total no. multiallelic normalized        : 0
+
+           total no. variants normalized            : 0
+           total no. variants observed              : 17639
+           total no. reference observed             : 0
+
+    Time elapsed: 0.93s
+    // END //
     """
 
     # Regex
-    version_re = re.compile('normalize (?P<version>\S+$)')
-    input_re = re.compile('input VCF file\s+(?P<ifile>\S+)')
-    output_re = re.compile('output VCF file\s+(?P<ofile>\S+)')
-    sws_re = re.compile('sorting window size\s+(?P<sws>\d+)')
-    nfmri_re = re.compile('no fail on masked reference inconsistency\s+(?P<nfmri>\S+)')
-    nfri_re = re.compile('no fail on reference inconsistency\s+(?P<nfri>\S+)')
-    quiet_re = re.compile('quiet\s+(?P<quiet>\S+)')
-    debug_re = re.compile('debug\s+(?P<debug>\S+)')
-    rFf_re = re.compile('reference FASTA file\s+(?P<rFf>/\S+)')
-    nlt_re = re.compile('no. left trimmed\s+: (?P<nlt>\d+)')
-    nrt_re = re.compile('no. right trimmed\s+: (?P<nrt>\d+)')
-    nlrt_re = re.compile('no. left and right trimmed\s+: (?P<nlrt>\d+)')
-    nrtla_re = re.compile('no. right trimmed and left aligned\s+: (?P<nrtla>\d+)')
-    nla_re = re.compile('no. left aligned\s+: (?P<nla>\d+)')
-    tnbn_re = re.compile('total no. biallelic normalized\s+: (?P<tnbn>\d+)')
-    tnmn_re = re.compile('total no. multiallelic normalized\s+: (?P<tnmn>\d+)')
-    tnvn_re = re.compile('total no. variants normalized\s+: (?P<tnvn>\d+)')
-    tnvn_ro = re.compile('total no. variants observed\s+: (?P<tnvo>\d+)')
-    tnrn_ro = re.compile('total no. reference observed\s+: (?P<tnro>\d+)')
-    time_re = re.compile('Time elapsed: (?P<time>\d\S+)')
+    value_re = re.compile('(?P<value>\S+)$')
 
     # Report data structure
     report = {
@@ -137,139 +162,120 @@ def parse_vt_normalize_report(report_filepath: str) -> dict:
         'time_elapsed': None,
     }
 
-    options = report['options']
-    stats = report['stats']
+    stats_section = None
 
     with open(report_filepath, 'r') as fh:
         for line in fh:
-            line = line.lstrip(' ')
+            line = line.lstrip() # Default stripping by whitespaces
+
+            if not line: # Line is empty
+                continue
+
+            value = value_re.search(line).groupdict()['value']
+
+            # Parsing version
             if line.startswith('normalize'):
-                capture_value = version_re.search(line).groupdict()["version"]
-                report['version'] = f"vt_normalize_{capture_value}"
+                report['version'] = f"vt_normalize_{value}"
 
+            #Parsing options
             elif line.startswith('options'):
-                capture_value = input_re.search(line).groupdict()['ifile']
-                report['options']['input_vcf'] = capture_value
+                report['options']['input_vcf'] = value
 
-            elif line.startswith('[o] output VCF'):
-                capture_value = output_re.search(line).groupdict()['ofile']
-                report['options']['output_vcf'] = capture_value
+            elif line.startswith('[o]'):
+                report['options']['output_vcf'] = value
 
-            elif line.startswith('[w] sorting window size'):
-                capture_value = sws_re.search(line).groupdict()['sws']
-                report['options']['sorting_window_size'] = capture_value
+            elif line.startswith('[w]'):
+                report['options']['sorting_window_size'] = value
 
-            elif line.startswith('[m] no fail on masked reference inconsistency'):
-                capture_value = nfmri_re.search(line).groupdict()['nfmri']
-                report['options']['no_fail_on_masked_reference_inconsistency'] = capture_value
+            elif line.startswith('[m]'):
+                report['options']['no_fail_on_masked_reference_inconsistency'] = value
 
-            elif line.startswith('[n] no fail on reference inconsistency'):
-                capture_value = nfri_re.search(line).groupdict()['nfri']
-                report['options']['no_fail_on_reference_inconsistency'] = capture_value
+            elif line.startswith('[n]'):
+                report['options']['no_fail_on_reference_inconsistency'] = value
 
-            elif line.startswith('[q] quiet'):
-                capture_value = quiet_re.search(line).groupdict()['quiet']
-                report['options']['quiet'] = capture_value
+            elif line.startswith('[q]'):
+                report['options']['quiet'] = value
 
-            elif line.startswith('[d] debug'):
-                capture_value = debug_re.search(line).groupdict()['debug']
-                report['options']['debug'] = capture_value
+            elif line.startswith('[d]'):
+                report['options']['debug'] = value
 
-            elif line.startswith('[r] reference FASTA file'):
-                capture_value = rFf_re.search(line).groupdict()['rFf']
-                report['options']['rFf'] = capture_value
+            elif line.startswith('[r]'):
+                report['options']['reference'] = value
 
+            # Parsing stats
+            # Assign stats section ['biallelic', 'multiallelic']
+            elif line in ['stats: biallelic', 'multiallelic']:
+                stats_section = line.replace('stats: ','')
+
+            # Parse 'no.*' lines
             elif line.startswith('no. left trimmed'):
-                capture_value = nlt_re.search(line).groupdict()['nlt']
-                if stats['n_biallelic_left_trimmed']:
-                    report['stats']['n_multiallelic_left_trimmed'] = int(capture_value)
-                else:
-                    report['stats']['n_biallelic_left_trimmed'] = int(capture_value)
+                report['stats'][f"n_{stats_section}_left_trimmed"] = int(value)
 
             elif line.startswith('no. right trimmed'):
-                capture_value = nrt_re.search(line).groupdict()['nrt']
-                if stats['n_biallelic_right_trimmed']:
-                    report['stats']['n_multiallelic_right_trimmed'] = int(capture_value)
-                else:
-                    report['stats']['n_biallelic_right_trimmed'] = int(capture_value)
+                report['stats'][f"n_{stats_section}_right_trimmed"] = int(value)
 
             elif line.startswith('no. left and right trimmed'):
-                capture_value = nlrt_re.search(line).groupdict()['nlrt']
-                if stats['n_biallelic_left_right_trimmed']:
-                    report['stats']['n_multiallelic_left_right_trimmed'] = int(capture_value)
-                else:
-                    report['stats']['n_biallelic_left_right_trimmed'] = int(capture_value)
+                report['stats'][f"n_{stats_section}_left_right_trimmed"] = int(value)
 
             elif line.startswith('no. right trimmed and left aligned'):
-                capture_value = nrtla_re.search(line).groupdict()['nrtla']
-                if stats['n_biallelic_left_right_aligned']:
-                    report['stats']['n_multiallelic_left_right_aligned'] = int(capture_value)
-                else:
-                    report['stats']['n_biallelic_left_right_aligned'] = int(capture_value)
+                report['stats'][f"n_{stats_section}_right_trimmed_left_aligned"] = int(value)
 
             elif line.startswith('no. left aligned'):
-                capture_value = nla_re.search(line).groupdict()['nla']
-                if stats['n_biallelic_left_aligned']:
-                    report['stats']['n_multiallelic_left_aligned'] = int(capture_value)
-                else:
-                    report['stats']['n_biallelic_left_aligned'] = int(capture_value)
+                report['stats'][f"n_{stats_section}_left_aligned"] = int(value)
 
+            # Parse 'total no.*' lines
             elif line.startswith('total no. biallelic normalized'):
-                capture_value = tnbn_re.search(line).groupdict()['tnbn']
-                report['stats']['n_variants'] = int(capture_value)
+                report['stats']['n_biallelic_normalized'] = int(value)
 
             elif line.startswith('total no. multiallelic normalized'):
-                capture_value = tnmn_re.search(line).groupdict()['tnmn']
-                report['stats']['n_variants'] = int(capture_value)
+                report['stats']['n_multiallelic_normalized'] = int(value)
 
             elif line.startswith('total no. variants normalized'):
-                capture_value = tnvn_re.search(line).groupdict()['tnvn']
-                report['stats']['n_variants'] = int(capture_value)
+                report['stats']['n_variants_normalized'] = int(value)
 
             elif line.startswith('total no. variants observed'):
-                capture_value = nvo_re.search(line).groupdict()['nvo']
-                report['stats']['n_variants'] = int(capture_value)
+                report['stats']['n_variants_observed'] = int(value)
 
             elif line.startswith('total no. reference observed'):
-                capture_value = tnro_re.search(line).groupdict()['tnro']
-                report['stats']['n_variants'] = int(capture_value)
+                report['stats']['n_reference_observed'] = int(value)
 
+            # Parsing time elapsed
             elif line.startswith('Time elapsed'):
-                capture_value = time_re.search(line).groupdict()['time']
-                report['time_elapsed'] = capture_value
+                report['time_elapsed'] = value
 
     return report
 
 def get_report_type(report_filepath: str):
     """
-    normalize
-    decompose
+    <PENDING>
     """
 
     with open(report_filepath, 'r') as fh:
         report_type = fh.readline().split( )[0]
+    if report_type not in ['decompose','normalize']:
+        raise ValueError(f"Report type '{report_type}' not supported")
     return report_type
 
-# Dispatcher
-
 def parse_vt_report(input_filepath: str) -> dict:
-
     """
+    <PENDING>
     """
 
     parser_dispatcher = {
-        'decompose': parse_vt_decompose_report(input_filepath),
-        'normalize': parse_vt_normalize_report(input_filepath)
+        'decompose': parse_vt_decompose_report,
+        'normalize': parse_vt_normalize_report
     }
 
     report_type = get_report_type(input_filepath)
+    result = parser_dispatcher[report_type](input_filepath)
 
-    return parser_dispatcher[report_type]
+    return result
 
 def export_json(data: dict, output_filepath: str) -> None:
     """
     <PENDING>
     """
+
     with open(output_filepath,"w") as fh:
         fh.write(json.dumps(data, indent=4))
 
@@ -277,12 +283,11 @@ def main():
     """
     <PENDING>
     """
-    # # Parse arguments from CLI
+
+    # Parse arguments from CLI
     args = get_args()
-    args.input_filepath = "vt_decompose_report.txt"
-    args.output_filepath = "vt_decompose_report.json"
-    print(args.input_filepath)
-    print(args.output_filepath)
+    args.input_filepath
+    args.output_filepath
     # Parse report
     report_data = parse_vt_report(input_filepath=args.input_filepath)
     # Export report
