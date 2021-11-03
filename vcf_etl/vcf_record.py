@@ -76,11 +76,11 @@ class RecordInfo:
     def __init__(self, data=None):
         """
         Class to store Info field data from a given record
-        :param value: vcfpy.record
+        :param data: dict
         """
         self._data = data
 
-    #Getters and setters
+    # Getters and setters
     @property
     def data(self):
         """
@@ -98,8 +98,34 @@ class RecordInfo:
         if type(value) == dict:
             self._data = value
 
+class RecordAnnotation:
+    def __init__(self, data=None):
+        """
+        Class to store Info varian annotation data from a given record
+        :param data: dict
+        """
+        self._data = data
+
+    # Getters and setters
+    @property
+    def data(self):
+        """
+        Returns a dict with RecordAnnotation data
+        :return: dict
+        """
+        return self._data
+
+    @data.setter
+    def data(self, value):
+        """
+        Sets data attribute from a dict
+        :param value: dict
+        """
+        if type(value) == dict:
+            self._data = value
+
 class VcfRecord:
-    def __init__(self, record=None):
+    def __init__(self, record=None, annotation_field=None, annotation_keys=None, annotation_list_sep=None, annotation_sep=None):
         """
         Class to store data from a given record of a VCF formatted file
         :param filepath: vcfpy.record
@@ -116,15 +142,24 @@ class VcfRecord:
         self._type = None
         self._info = []
         self._calls = []
+        self._annotation_field = None
+        self._annotation_keys = None
+        self._annotation_list_sep = None
+        self._annotation_sep = None
+        self._annotations = []
+
 
         if record:
             self._record = record
-            self._populate_object()
+            self._populate_record()
+
+        if annotation_field and annotation_keys and annotation_list_sep and annotation_sep:
+            self._populate_annotations()
 
     # Private methods
-    def _populate_object(self):
+    def _populate_record(self):
         """
-        Parses the data from a given record of a VCF formatted file
+        Parses the data from a given record of a VCF formatted file (wihtout including variant annotation)
         :return:self._get_record_id = str
                 self._get_record_chrom = str
                 self._get_record_pos = int
@@ -147,7 +182,6 @@ class VcfRecord:
         self._get_record_info()
         self._get_record_calls()
 
-    # For each record
     def _get_record_id(self) -> str:
         """
         Generates and loads the id value for a given record of a VCF file
@@ -209,7 +243,11 @@ class VcfRecord:
         Loads the info field from a given record of a VCF file
         :return: RecordInfo
         """
-        self._info = RecordInfo(data=self._record.INFO)
+        data = self._record.INFO
+        # Remove annotation field from info data
+        if self._annotation_field:
+            data.pop(self._annotation_field, None)
+        self._info = RecordInfo(data=data)
 
     def _get_record_calls(self) -> list:
         """
@@ -220,6 +258,22 @@ class VcfRecord:
 
         for call in self._record.calls:
             self._calls.append(RecordCall(call=call))
+
+    def _populate_record_annotations(self):
+        """
+        Parses the variant annotation data from the INFO field of a record from a VCF file
+        """
+
+        # Get annotation field content from vcfpy.Record.INFO
+        annotations_str = self._record.INFO[self._annotation_field]
+        # Split mutiple annotations for a record by a separator
+        for annotation_str in annotations_str.split(self._annotation_list_sep):
+            # Split annotation values by a separator
+            annotation_values = annotation_str.split(self._annotation_sep)
+            # Create a dictionary of annotations
+            annotation_data = dict(zip(self._annotation_keys, annotation_values))
+            # Append RecordAnnotation objects
+            self._annotations.append(RecordAnnotation(annotation=annotation_data))
 
     #Getters and setters
     @property
@@ -390,11 +444,32 @@ class VcfRecord:
         :param value: list
         """
         if type(value) == list:
-            test_call = []
+            test_calls = []
             for item in value:
-                test_call.append(type(item)==RecordCall)
-            if all(test_call):
+                test_calls.append(type(item)==RecordCall)
+            if all(test_calls):
                 self._calls = value
+
+    @property
+    def annotations(self):
+        """
+        Returns a list of RecordAnnotation objects with vcfpy.Record.INFO annotation field from a record
+        :return: list
+        """
+        return self._annotations
+
+    @annotations.setter
+    def annotations(self):
+        """
+        Sets a list of RecordAnnotation objects of a given record
+        :param value: list
+        """
+        if type(value) == list:
+            test_annotations = []
+            for item in value:
+                test_annotations.append(type(item)==RecordAnnotation)
+            if all(test_annotation):
+                self._annotations = value
 
 def main():
     vcf_filepath = "/Users/segarmond/Documents/Science/Bioinfo/TFM/old_msm_tfm/msm_tfm-main/test_data/20200908_GISTomics_chr22_variants.decomp.norm.filter.vcf.gz"
