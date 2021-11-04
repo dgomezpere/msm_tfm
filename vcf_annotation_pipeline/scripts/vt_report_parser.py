@@ -279,6 +279,16 @@ def export_json(data: dict, output_filepath: str) -> None:
     with open(output_filepath,"w") as fh:
         fh.write(json.dumps(data, indent=4))
 
+def vt_report_parser(input_filepath: str, output_filepath: str) -> None:
+    """
+    <PENDING>
+    """
+
+    # Parse report
+    report_data = parse_vt_report(input_filepath=input_filepath)
+    # Export report
+    export_json(data=report_data, output_filepath=output_filepath)
+
 def main():
     """
     <PENDING>
@@ -286,12 +296,8 @@ def main():
 
     # Parse arguments from CLI
     args = get_args()
-    args.input_filepath
-    args.output_filepath
-    # Parse report
-    report_data = parse_vt_report(input_filepath=args.input_filepath)
-    # Export report
-    export_json(data=report_data, output_filepath=args.output_filepath)
+    # Parse and export report
+    vt_report_parser(input_filepath=args.input_filepath, output_filepath=args.output_filepath)
 
 if __name__ == '__main__':
     main()
