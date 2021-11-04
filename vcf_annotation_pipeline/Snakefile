@@ -33,8 +33,10 @@ if not vcf_symlink.exists():
 # Include rules
 include: 'rules/vcf_decomp_norm.smk'
 include: 'rules/vcf_annotation.smk'
+include: 'rules/vcf_qc_report.smk'
 
 rule all:
     input:
-        rules.vep_annot_vcf.output
+        rules.vep_annot_vcf.output,
+        rules.vt_reports_to_json.output,
 
