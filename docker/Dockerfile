@@ -128,4 +128,5 @@ ENV PATH="/opt/bin:$PATH"
 # Expose ports:
 # - Jupyterlab: 8888
 EXPOSE \
-    8888
+    8888 \
+    8050
