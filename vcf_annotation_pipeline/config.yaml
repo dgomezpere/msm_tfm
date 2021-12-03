@@ -37,3 +37,10 @@ vep:
         exclude_predicted: true
         specie: 'hsapiens'
         assembly: 'GRCh38'
+
+mongo_builder:
+    path: '/opt/bin/mongodb_builder'
+    opts:
+        annotation_field: 'CSQ'
+        annotation_sep: '|'
+        buffersize_records: 1000

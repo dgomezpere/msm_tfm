@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 #-*- coding: utf-8 -*-
 
-# Run vep_annot_vcf
 rule vep_annot_vcf:
     input:
         vcf = rules.vt_normalize.output.vcf,

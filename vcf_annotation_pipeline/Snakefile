@@ -34,9 +34,11 @@ if not vcf_symlink.exists():
 include: 'rules/vcf_decomp_norm.smk'
 include: 'rules/vcf_annotation.smk'
 include: 'rules/vcf_qc_report.smk'
+include: 'rules/vcf_etl_mongo.smk'
 
 rule all:
     input:
         rules.vep_annot_vcf.output,
+        rules.vcf_etl_mongo.output,
         rules.vt_reports_to_json.output,
 
