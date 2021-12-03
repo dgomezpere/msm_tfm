@@ -127,6 +127,9 @@ ENV PATH="/opt/bin:$PATH"
 
 # Expose ports:
 # - Jupyterlab: 8888
+# - Plotly-Dash: 8050
+# - Panoptes: 5000
 EXPOSE \
     8888 \
-    8050
+    8050 \
+    5000
