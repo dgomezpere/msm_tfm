@@ -12,7 +12,7 @@ import pandas as pd
 
 from app import app
 from app import server
-from apps import app0, app1, app2, app3, app4
+from apps import app0, app1, app2, app3, app4, app5
 
 import datetime
 import base64
@@ -117,11 +117,12 @@ def show_removed_rows(previous, current):
     State('datatable-row-ids', 'selected_row_ids'),
     Input('delete_analysis', 'n_clicks')])
 def delete_id(selected_row_ids, row, n_clicks):
-    dff=df
+    global df
     if n_clicks == 0:
         raise dash.exceptions.PreventUpdate()
     else:
-        changed_id = [p['prop_id'] for p in dash.callback_context.triggered][0]
-        dff=dff.drop(row, axis=0)
-        if 'delete_analysis' in changed_id:
-            return dff.to_dict('records')
+        #changed_id = [p['prop_id'] for p in dash.callback_context.triggered][0]
+        df=df.drop(row, axis=0)
+        #if 'delete_analysis' in changed_id:
+        return df.to_dict('records')
+        n_clicks = 0

@@ -9,7 +9,7 @@ import pandas as pd
 
 from app import app
 from app import server
-from apps import app0, app1, app2, app3, app4
+from apps import app0, app1, app2, app3, app4, app5
 
 # #https://dash.plotly.com/datatable/callbacks
 #

@@ -4,7 +4,7 @@ from dash.dependencies import Input, Output
 
 from app import app
 from app import server
-from apps import app0, app1, app2, app3, app4
+from apps import app0, app1, app2, app3, app4, app5
 
 
 app.layout = html.Div([
@@ -24,6 +24,8 @@ def display_page(pathname):
         return app3.layout
     elif pathname == '/apps/app4':
         return app4.layout
+    elif pathname == '/apps/app5':
+        return app5.layout
     else:
         return app0.layout
 
