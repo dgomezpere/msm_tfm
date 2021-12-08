@@ -1,35 +1,11 @@
-# import dash_core_components as dcc
-# import dash_html_components as html
-# import dash_table
-#
-# import time
-#
-from app import app
-from app import server
-from apps import app0, app1, app2, app3, app4, app5
-#
-# import dash_bootstrap_components as dbc
-# from dash import Input, Output, html
-#
-# layout = html.Div(
-#     [
-#         dbc.Button("Load", id="loading-button", n_clicks=0),
-#         dbc.Progress(html.Div(id="loading-output"))
-#     ]
-# )
-#
-#
-# @app.callback(
-#     Output("loading-output", "children"), [Input("loading-button", "n_clicks")]
-# )
-# def load_output(n):
-#     if n:
-#         time.sleep(3)
-#         return f"Output loaded {n} times"
-#     return "Output not reloaded yet"
+#TEST VIEW FOR LOADING DATA
 
 import dash_bootstrap_components as dbc
 from dash import Input, Output, State, html
+
+from app import app
+from app import server
+from apps import app0, app1, app2, app3, app4
 
 grey_button_style={'margin-top': '20px', 'margin-left': '30px',
 'display': 'inline-block', 'background-color': 'grey',
@@ -76,7 +52,6 @@ layout = html.Div(
             style=grey_button_style, n_clicks=0),
     ]
 )
-
 
 @app.callback(
     Output("variant_decomposition", "style"),

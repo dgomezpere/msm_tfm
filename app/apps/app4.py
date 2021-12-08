@@ -2,28 +2,28 @@ import dash_core_components as dcc
 import dash_html_components as html
 import dash_table
 from dash.dependencies import Input, Output, State
+import dash_bootstrap_components as dbc
 
-import flask
-from datetime import date
 import pandas as pd
 
 from app import app
 from app import server
-from apps import app0, app1, app2, app3, app4, app5
+from apps import app0, app1, app2, app3, app4
 
 # #https://dash.plotly.com/datatable/callbacks
-#
-# #JSON instead of csv
 
+# #JSON instead of csv
 df = pd.read_csv('https://raw.githubusercontent.com/plotly/datasets/master/gapminder2007.csv')
 
 PAGE_SIZE = 5
 
+#Layout is a loading table. It is possible to select how any entries are shown.
 layout = html.Div(
     className="row",
     children=[
         html.H1('Somatic Seeker', style={'color': 'darkblue'}),
         html.Hr(),
+        html.H2('Analysis name'),
         html.Div(
                 dash_table.DataTable(
                 id='table-paging-with-graph',
@@ -31,43 +31,45 @@ layout = html.Div(
                     {"name": i, "id": i} for i in sorted(df.columns)
                 ],
                 page_current=0,
-                page_size=500,
+                page_size=PAGE_SIZE,
                 page_action='custom',
-
                 editable=True,
                 column_selectable="single",
                 row_deletable=True,
-                row_selectable="multi",
                 selected_columns=[],
                 selected_rows=[],
-
+                fill_width=False,
+                style_table={
+                'maxHeight': '50ex',
+                'overflowY': 'scroll',
+                'overflowX': 'scroll',
+                'width': '950px',
+                'marginLeft': '30px'
+                },
                 filter_action='custom',
                 filter_query='',
-
                 sort_action='custom',
                 sort_mode='multi',
                 sort_by=[],
                 export_format='xlsx',
                 export_headers='display',
                 export_columns='visible',
-                merge_duplicate_headers=True
+                merge_duplicate_headers=True,
+
             ),
-            style={'height': 750, 'overflowY': 'scroll'},
+            style={'height': 500, 'overflowY': 'scroll'},
             className='six columns'
         ),
         html.Div(
             id='table-paging-with-graph-container',
-            className="five columns"
+            className="four columns"
         ),
-    html.Br(),
-    # dcc.Checklist( id='datatable-use-page-count',
-    # options=[{'label': 'Use page_count', 'value': 'True'}],
-    # value=['True']),'Page count: ',
-    # dcc.Input(id='datatable-page-count',
-    # type='number',
-    # min=1,
-    # max=29,
-    # value=20)
+    html.H6('Number of Variants',
+    style={'margin-left': '25px', 'color':'darkblue'
+    }),
+    dcc.Input(id='datatable-page-size',
+    type='number', min=1, value=20,
+    style={'margin-left': '40px', 'width': '80px'})
     ])
 
 operators = [['ge ', '>='],
@@ -78,7 +80,6 @@ operators = [['ge ', '>='],
              ['eq ', '='],
              ['contains '],
              ['datestartswith ']]
-
 
 def split_filter_part(filter_part):
     for operator_type in operators:
@@ -103,7 +104,7 @@ def split_filter_part(filter_part):
 
     return [None] * 3
 
-
+#Callback to filter, edit the number of records shown and sort the datatable
 @app.callback(
     Output('table-paging-with-graph', "data"),
     Input('table-paging-with-graph', "page_current"),
@@ -139,12 +140,3 @@ def update_table(page_current, page_size, sort_by, filter):
     return dff.iloc[
         page_current*page_size: (page_current + 1)*page_size
     ].to_dict('records')
-
-# @app.callback(
-#     Output('table-paging-with-graph', 'page_count'),
-#     Input('datatable-use-page-count', 'value'),
-#     Input('datatable-page-count', 'value'))
-# def update_table(use_page_count, page_count_value):
-#     if len(use_page_count) == 0 or page_count_value is None:
-#         return None
-#     return page_count_value

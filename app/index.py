@@ -1,18 +1,20 @@
+#Import required dash components and modules
 import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output
 
+#Import app scripts
 from app import app
 from app import server
-from apps import app0, app1, app2, app3, app4, app5
+from apps import app0, app1, app2, app3, app4
 
-
+#Start layout
 app.layout = html.Div([
     dcc.Location(id='url', refresh=False),
     html.Div(id='page-content')
 ])
 
-
+#Callback to start the differnt views of the app
 @app.callback(Output('page-content', 'children'),
               Input('url', 'pathname'))
 def display_page(pathname):
@@ -24,11 +26,8 @@ def display_page(pathname):
         return app3.layout
     elif pathname == '/apps/app4':
         return app4.layout
-    elif pathname == '/apps/app5':
-        return app5.layout
     else:
         return app0.layout
-
 
 if __name__ == '__main__':
     app.run_server(debug=True)
