@@ -16,6 +16,7 @@ rule vep_annot_vcf:
     params:
         vep_path = config['vep']['path'],
         tabix_path = config['tabix']['path'],
+        offline = config['vep']['opts']['offline'],
         buffer_size = config['vep']['opts']['buffer_size'],
         dir_cache = config['vep']['opts']['dir_cache'],
         exclude_predicted = config['vep']['opts']['exclude_predicted'],
@@ -26,6 +27,8 @@ rule vep_annot_vcf:
     run:
         params_list = []
 
+        if params.offline:
+            params_list.append('--offline') 
         params_list.append('--fork {}'.format(threads))
         params_list.append('--buffer_size {}'.format(params.buffer_size))
         params_list.append('--dir_cache {}'.format(params.dir_cache))

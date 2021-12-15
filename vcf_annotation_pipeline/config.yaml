@@ -32,10 +32,11 @@ tabix:
 vep:
     path: '/opt/bin/vep'
     opts:
+        offline: true
         buffer_size: 10000
         dir_cache: '/opt/msm_tfm/ensembl-vep/cache'
         exclude_predicted: true
-        specie: 'hsapiens'
+        specie: 'homo_sapiens'
         assembly: 'GRCh38'
 
 mongo_builder:
