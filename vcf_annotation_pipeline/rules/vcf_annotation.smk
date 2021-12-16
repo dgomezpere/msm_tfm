@@ -22,7 +22,7 @@ rule vep_annot_vcf:
         exclude_predicted = config['vep']['opts']['exclude_predicted'],
         specie = config['vep']['opts']['specie'],
         assembly = config['vep']['opts']['assembly'],
-        refgenome = config['references']['refgenome_filepath'],
+        refgenome = config['refgenome_filepath'],
     threads: workflow.cores,
     run:
         params_list = []

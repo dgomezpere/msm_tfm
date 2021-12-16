@@ -58,7 +58,7 @@ rule vt_normalize:
         vt_path = config['vt']['path'],
         bcftools_path = config['bcftools']['path'],
         tabix_path = config['tabix']['path'],
-        refgenome = config['references']['refgenome_filepath'],
+        refgenome = config['refgenome_filepath'],
         window_size = config['vt']['opts']['window_size']
     run:
         params_list = []
