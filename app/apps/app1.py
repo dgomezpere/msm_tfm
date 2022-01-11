@@ -6,9 +6,17 @@ import dash_bootstrap_components as dbc
 
 from app import app
 from app import server
-from apps import app0, app1, app2, app3, app4
+from apps import app0, app1, app2, app3, app4, app5
 
-# Define button style
+import flask
+from datetime import date
+import pandas as pd
+
+
+import datetime
+import base64
+import io
+
 grey_button_style={'background-color': 'grey', 'borderColor': 'grey',
 'height': '50px','width': '140px',
 'margin-top': '20px','margin-left': '100px'
@@ -24,7 +32,9 @@ blue_button_style={'background-color': 'darkblue', 'borderColor': 'darkblue',
 'margin-top': '20px','margin-left': '100px'
 }
 
-#Start layout
+
+
+
 layout = html.Div([
     html.H1('Somatic Seeker', style={'color': 'darkblue',
     'margin-left': '30px', 'margin-top': '15px'}),
@@ -64,8 +74,7 @@ layout = html.Div([
         style={'margin-bottom':'20px', 'margin-left': '30px'})
     ]),
     ),
-#Create Ran analysis button. When it is clicked the analysis is started and
-#a new window is opened with panoptes running
+    #html.Div(id='output-state'),
     dcc.Link(dbc.Button('Run Analysis', id='run_analysis',
     style=blue_button_style, n_clicks= 0),
     href='http://127.0.0.1:5000/new_project',
@@ -73,7 +82,28 @@ layout = html.Div([
     html.Div(id='page_content')
 ])
 
-#Start a callbak to change the color of Run analysis button when it is clicked
+@app.callback(Output('output-state', 'children'),
+              Input('input-1-state', 'contents'),
+              Input('input-1-state', 'filename'),
+              Input('input-1-state', 'last_modified'))
+
+def return_output(contents, filename, last_modified):
+    try:
+        if 'txt' in filename:
+            return html.Div([
+            html.H5(base64.b64decode(contents.split(',')[1]).decode('utf-8')), #Decode and recode to utf-8
+            html.H5(filename),
+            html.H5(datetime.datetime.fromtimestamp(last_modified).date()) #From just seconds to date
+            ])
+        else:
+            return html.Div([
+            html.H5("ERROR Upload a .txt file")
+            ])
+    except:
+        return html.Div([
+        html.H5("Upload a .txt file")
+        ])
+
 @app.callback(
     Output("run_analysis", "style"),
     [Input("run_analysis", "n_clicks")
@@ -85,8 +115,6 @@ def change_button_color(n_clicks):
     else:
         return blue_button_style
 
-#Start a callback to generate a new button to proceed with the analysis
-#once the pipeline ends
 @app.callback(
     Output("page_content", "children"),
     [Input("run_analysis", "n_clicks")

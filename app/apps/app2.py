@@ -5,18 +5,23 @@ import dash_table
 from dash.dependencies import Input, Output, State
 import dash_bootstrap_components as dbc
 
+
+import flask
+from datetime import date
 import pandas as pd
 
 from app import app
 from app import server
-from apps import app0, app1, app2, app3, app4
+from apps import app0, app1, app2, app3, app4, app5
 
-#Start an example dataframe
+import datetime
+import base64
+import io
+
 df = pd.read_csv('https://raw.githubusercontent.com/plotly/datasets/master/gapminder2007.csv')
 df['id'] = df['country']
 df.set_index('id', inplace=True, drop=False)
 
-#Start layout to show a table with the differnt analysis done
 layout = html.Div([
     html.H1('Somatic Seeker', style={'color': 'darkblue', 'margin-left': '30px'}),
     html.Hr(),
@@ -33,6 +38,7 @@ layout = html.Div([
             if i != 'id'
         ],
         data=df.to_dict('records'),
+        editable=True,
         filter_action="native",
         sort_action="native",
         sort_mode='single',
@@ -42,9 +48,6 @@ layout = html.Div([
         page_current= 0,
         page_size= 10,
         fill_width=True,
-        export_format='xlsx',
-        export_headers='display',
-        export_columns='visible',
         style_table={
         'maxHeight': '50ex',
         'overflowY': 'scroll',
@@ -55,32 +58,59 @@ layout = html.Div([
     ),
     html.Div(id='datatable-row-ids-container'),
 
-#Create a button to visualize the result of a previous analysis
     dcc.Link(dbc.Button('View Analysis', style={
     'display': 'inline-block', 'background-color': 'darkblue',
     'borderColor': 'darkblue',
     'height': '50px','width': '140px',
-    'margin-top': '10px','margin-left': '100px'
+    'margin-top': '30px','margin-left': '100px'
     }), href='/apps/app3'),
 
-#Create a button to confirm the deletion of a previous analysis
     dbc.Button('Delete Analysis', id="delete_analysis", style={
     'display': 'inline-block', 'background-color': 'darkblue',
     'borderColor': 'darkblue',
     'height': '50px','width': '140px',
-    'margin-top': '10px','margin-left': '100px'
+    'margin-top': '30px','margin-left': '100px'
     }, n_clicks=0),
 
-#Create a button to repeat the analysis from a previous data analysis
     dcc.Link(dbc.Button('Run New Analysis', style={
     'display': 'inline-block', 'background-color': 'darkblue',
     'borderColor': 'darkblue',
     'height': '50px','width': '160px',
-    'margin-top': '10px','margin-left': '100px'
+    'margin-top': '30px','margin-left': '100px'
     }), href='/apps/app3'),
+
+    dcc.Download(id="download-list"),
+    html.Div(id='output'),
+    html.Div(id='datatable-row-ids-selection')
+
 ])
 
-#Create a callback delete a row after selecting it and clicking Delete analysis
+@app.callback(
+    Output("download-list", "data"),
+    Input("btn_download_list", "n_clicks"),
+    prevent_initial_call=True)
+def download_table(n_clicks):
+    return dcc.send_data_frame(df.to_csv, "mydf_csv.csv")
+
+@app.callback(Output('output', 'children'),
+              [Input('datatable-row-ids', 'data_previous')],
+              [State('datatable-row-ids', 'data')])
+def show_removed_rows(previous, current):
+    if previous is None:
+        dash.exceptions.PreventUpdate()
+    else:
+        return [f'Just removed {row}' for row in previous if row not in current]
+
+# @app.callback(
+#     Output('datatable-row-ids-selection', 'children'),
+#     [State('datatable-row-ids', 'derived_virtual_row_ids'),
+#     State('datatable-row-ids', 'selected_row_ids'),
+#     Input('delete_analysis', 'n_clicks')])
+# def delete_id(selected_row_ids, row, n_clicks):
+#     changed_id = [p['prop_id'] for p in dash.callback_context.triggered][0]
+#     if 'delete_analysis' in changed_id:
+#         return row
+
 @app.callback(
     Output('datatable-row-ids', 'data'),
     [State('datatable-row-ids', 'derived_virtual_row_ids'),
