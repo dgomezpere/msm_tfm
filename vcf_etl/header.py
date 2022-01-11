@@ -114,7 +114,7 @@ class Contig:
         Parses the contig id from a vcfpy.header.ContigHeaderLine
         """
         if type(self._contig_header_line) == vcfpy.header.ContigHeaderLine:
-            self._length = self._contig_header_line.mapping['length']
+            self._length = int(self._contig_header_line.mapping['length'])
 
     def to_dict(self) -> dict:
         """

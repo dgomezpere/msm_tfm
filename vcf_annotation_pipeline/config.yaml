@@ -5,8 +5,7 @@ workdir_tree:
     qc_report_dirpath: 'qc/report'
 
 # References
-references:
-    refgenome_filepath: '/opt/msm_tfm/references/GCA_000001405.15_GRCh38_no_alt_plus_hs38d1_analysis_set.fa'
+refgenome_filepath: '/opt/msm_tfm/references/GCA_000001405.15_GRCh38_no_alt_plus_hs38d1_analysis_set.fa'
 
 # CLI software configuration
 vcf_validator:
@@ -32,8 +31,16 @@ tabix:
 vep:
     path: '/opt/bin/vep'
     opts:
+        offline: true
         buffer_size: 10000
         dir_cache: '/opt/msm_tfm/ensembl-vep/cache'
         exclude_predicted: true
-        specie: 'hsapiens'
+        specie: 'homo_sapiens'
         assembly: 'GRCh38'
+
+mongo_builder:
+    path: '/opt/bin/mongodb_builder'
+    opts:
+        annotation_field: 'CSQ'
+        annotation_sep: '|'
+        buffersize_records: 1000

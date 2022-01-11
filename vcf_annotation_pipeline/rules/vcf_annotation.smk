@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 #-*- coding: utf-8 -*-
 
-# Run vep_annot_vcf
 rule vep_annot_vcf:
     input:
         vcf = rules.vt_normalize.output.vcf,
@@ -17,16 +16,19 @@ rule vep_annot_vcf:
     params:
         vep_path = config['vep']['path'],
         tabix_path = config['tabix']['path'],
+        offline = config['vep']['opts']['offline'],
         buffer_size = config['vep']['opts']['buffer_size'],
         dir_cache = config['vep']['opts']['dir_cache'],
         exclude_predicted = config['vep']['opts']['exclude_predicted'],
         specie = config['vep']['opts']['specie'],
         assembly = config['vep']['opts']['assembly'],
-        refgenome = config['references']['refgenome_filepath'],
+        refgenome = config['refgenome_filepath'],
     threads: workflow.cores,
     run:
         params_list = []
 
+        if params.offline:
+            params_list.append('--offline') 
         params_list.append('--fork {}'.format(threads))
         params_list.append('--buffer_size {}'.format(params.buffer_size))
         params_list.append('--dir_cache {}'.format(params.dir_cache))

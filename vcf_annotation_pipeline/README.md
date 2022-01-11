@@ -13,3 +13,6 @@ snakemake --snakefile <Snakefile> --cores <cores> --config_file <config.yaml> \
     --config workdir=<workdir> input_vcf=<input_vcf> references.refgenome=<refgenome.fa> vep.opts.dir_cache=<dir_cache> \
     --until all --verbose -p
 ```
+
+If [panoptes](https://github.com/panoptes-organization/panoptes) is installed, use `--wms-monitor http://127.0.0.1:5000` when running the pipeline.
+`5000` is the default port for panoptes running service.
